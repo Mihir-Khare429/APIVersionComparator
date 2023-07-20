@@ -1,0 +1,14 @@
+# Flow of the pipeline
+# 1. Build stage will build the docker image
+# 2. 
+
+stages:
+  - build
+  - plan
+  - apply
+
+build-job:
+  image: 
+  stage: build
+  script: 
+    - docker build .
