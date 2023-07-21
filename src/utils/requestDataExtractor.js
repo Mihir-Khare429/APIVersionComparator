@@ -1,5 +1,3 @@
-import { oldResponse } from "../constants/sampleOldResponse.js";
-
 // The http body would contain the followig parameteres like { route, params, query, method, body}
 // The body would consist of response from old request and request body.
 

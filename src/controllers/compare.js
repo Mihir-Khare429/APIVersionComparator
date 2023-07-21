@@ -45,13 +45,11 @@ export const compareResponseLogsFromS3Processor = async (logs) => {
             if(log.method == 'GET'){
                 const response = httpRequest.GetResource();
                 promiseArray.push(response)
-                //await comparator(log.oldResponse, response)
             }
 
             if(log.method == 'POST'){
                 const response = httpRequest.PostResponse(log.body)
                 promiseArray.push(response)
-                //await comparator(log.oldResponse, response)
             }
         })
 

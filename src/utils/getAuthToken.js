@@ -1,6 +1,4 @@
 import axios from "axios";
-import { TOKEN } from "../constants/constants.js";
-
 // Need to check for expiry of token before request for new one.
 
 export const getAuthToken = async () => {
