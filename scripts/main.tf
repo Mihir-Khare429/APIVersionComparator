@@ -49,7 +49,7 @@ module "service_environment_stg" {
   container_variables = local.container_variables
   container_version   = var.container_version
 
-  on_image_deploy = "bash ../deploy-image.sh"
+  on_image_deploy = "bash ./deploy-image.sh"
 
   scaling_capacity_max = 4
   scaling_capacity_min = 0
