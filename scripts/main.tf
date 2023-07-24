@@ -12,14 +12,6 @@ terraform {
   }
 }
 
-variable "AWS_ACCESS_KEY" {
-
-}
-
-variable "AWS_SECRET_ACCESS_KEY" {
-
-}
-
 variable "container_version" {
   description = "The version of the image to push."
   type        = string
