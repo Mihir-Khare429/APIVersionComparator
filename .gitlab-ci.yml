@@ -59,7 +59,6 @@ build-stg :
     - npm -v
     - echo "checking NODE_ENV value"
     - echo $NODE_ENV
-    - npm ci
     - npm run build:stag
   variables :
     NODE_ENV : "stg"

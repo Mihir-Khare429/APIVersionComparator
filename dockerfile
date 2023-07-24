@@ -1,15 +1,17 @@
 FROM node:18-alpine
 
-WORKDIR /app
+RUN mkdir -p /usr/app
 
-COPY package.json /app/
+WORKDIR /usr/app
 
-COPY index.js /app/
+COPY package.json /usr/app
 
-RUN npm install
+COPY index.js /usr/app
 
-COPY ./src /app/src
+RUN npm ci
 
-EXPOSE 3000
+COPY ./src /usr/app
+
+EXPOSE 80
 
 CMD [ "node index.js" ]
