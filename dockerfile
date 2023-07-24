@@ -10,7 +10,7 @@ COPY package-lock.json /usr/app/
 
 COPY index.js /usr/app
 
-RUN npm ci
+RUN npm install
 
 COPY ./src /usr/app
 
