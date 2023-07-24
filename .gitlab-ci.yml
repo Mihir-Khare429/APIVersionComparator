@@ -36,7 +36,7 @@ intialise:
    script:
      - export SECRETS_STRING="$(aws secretsmanager get-secret-value --secret-id $AMAROK_ARTIFACTORY_TOKEN_SECRET_ARN --query SecretString --output text --region eu-west-1)"
      - echo "CT_ARTIFACTORY_TOKEN=$(jq -r '.token' <<<"$SECRETS_STRING")" >> build.env
-     - echo "CT_ARTIFACTORY_USER=$AMAROK_ARTIFACTORY_USER" >> build.env
+    #  - echo "CT_ARTIFACTORY_USER=$AMAROK_ARTIFACTORY_USER" >> build.env
    artifacts:
      expire_in: 1 week
      reports:
