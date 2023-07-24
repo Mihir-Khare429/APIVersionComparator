@@ -38,7 +38,7 @@ locals {
 }
 
 module "service_environment_stg" {
-  source = "../base_cicd_infra/service_environment/service_environment"
+  source = "./base_cicd_infra/service_environment/service_environment"
 
   container_port      = 80
   container_memory    = 500
