@@ -53,8 +53,6 @@ build-stg :
   stage : build
   artifacts :
     untracked: true 
-    paths :
-      - dist/ 
     expire_in : 1 week
   script : 
     - npm -v
@@ -90,6 +88,8 @@ deploy-stg :
   only : 
     - master
     - main
+  dependencies:
+    - "build-stg"
   script : 
     - chmod +x scripts/build-image.sh
     - ./scripts/build-image.sh

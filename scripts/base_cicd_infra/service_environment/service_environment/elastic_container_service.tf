@@ -18,6 +18,7 @@ locals {
       "logConfiguration": {
           "logDriver": "awslogs",
           "options": {
+              "awslogs-create-group": "true",
               "awslogs-group": "/ecs/${lower(var.service_name)}-${lower(var.service_environment)}-service",
               "awslogs-region": "eu-west-1",
               "awslogs-stream-prefix": "ecs"

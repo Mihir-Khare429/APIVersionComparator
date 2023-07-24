@@ -1,11 +1,9 @@
 FROM node:18-alpine
 
-RUN mkdir -p /usr/app
+WORKDIR /app
 
-WORKDIR /usr/app
-
-COPY . /usr/app
+COPY . /app
 
 EXPOSE 80
 
-CMD [ "node index.js" ]
+CMD [ "node", "index" ]
