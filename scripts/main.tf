@@ -69,3 +69,25 @@ module "service_environment_stg" {
 
 }
 
+resource "aws_ecs_task_definition" "comparatorProductPrice-nonprd" {
+  family                   = "comparatorProductPrice-nonprd"
+  container_definitions    = <<CONTAINER_DEFINITIONS
+                            [
+                              {
+                                "name": "comparatorProductPrice-nonprd",
+                                "image": "710170054012.dkr.ecr.eu-west-1.amazonaws.com/comparatorproductprice-nonprd:latest:${var.container_version}",
+                                "memory": 4800,
+                                "logConfiguration": {
+                                  "logDriver": "awslogs",
+                                  "options": {
+                                    "awslogs-group": "/ecs/comparatorProductPrice-nonprd",
+                                    "awslogs-region": "eu-west-1",
+                                    "awslogs-stream-prefix": "ecs"
+                                  }
+                                }
+                              }
+                            ]
+                            CONTAINER_DEFINITIONS
+}
+
+
