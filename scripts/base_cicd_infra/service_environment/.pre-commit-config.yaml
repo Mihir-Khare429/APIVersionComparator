@@ -1,0 +1,11 @@
+repos:
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.50.0 # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
+    hooks:
+      - id: terraform_tflint
+      #- id: terraform_tfsec <- Turned off until this bug gets addressed: https://github.com/aquasecurity/tfsec/issues/987
+      - id: terraform_validate
+      - id: terrascan
+      - id: checkov
+        additional_dependencies: ["checkov==2.0.41"]
+        args: ["--skip-check", "CKV_DOCKER_3,CKV_DOCKER_2"]

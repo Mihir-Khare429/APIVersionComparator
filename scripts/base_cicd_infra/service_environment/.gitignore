@@ -1,0 +1,5 @@
+# --------------------- #
+# Local Terraform Files #
+# --------------------- #
+*.terraform
+*.backup

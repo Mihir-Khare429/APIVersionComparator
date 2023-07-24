@@ -1,0 +1,35 @@
+.tags: &tags-common
+  tags:
+    - linux
+
+stages:
+  - lint
+  - tag
+
+lint:fea:
+  <<: *tags-common
+  image: $DEPLOYMENT_IMAGE
+  stage: lint
+  script:
+    - pip3 install --upgrade pip
+    - pip3 install pre-commit
+    - curl -L "$(curl -s https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" > tflint.zip && unzip tflint.zip && rm tflint.zip && mv tflint /usr/bin/
+    # - curl -L "$(curl -s https://api.github.com/repositories/173785481/releases/latest | grep -o -E "https://.+?tfsec-linux-amd64" | head -1)" > tfsec && chmod +x tfsec && mv tfsec /usr/bin/
+    - curl -L "https://github.com/accurics/terrascan/releases/download/v1.8.0/terrascan_1.8.0_Linux_x86_64.tar.gz" > terrascan.tar.gz && tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz && mv terrascan /usr/bin/
+    - terrascan init
+    - apk add gcc
+    - pip3 install -U wheel
+    - pip3 install -U checkov==2.0.41
+    - pre-commit run -a
+
+tag:
+  <<: *tags-common
+  image: node:16
+  stage: tag
+  only:
+    - master
+  script:
+    - npm install npx semantic-release @semantic-release/gitlab @semantic-release/changelog
+    - npx semantic-release
+  variables:
+    GITLAB_TOKEN: $PAT_DEVFINANCIALFLOWS

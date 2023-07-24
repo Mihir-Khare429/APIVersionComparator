@@ -38,7 +38,7 @@ locals {
 }
 
 module "service_environment_stg" {
-  source = "git::ssh://git@gitlab.com/cimpress-technology/ff/infrastructure.ci.cd/modules/ecs-service.git//service_environment?ref=v3.0.1"
+  source = "../base_cicd_infra/service_environment/service_environment"
 
   container_port      = 80
   container_memory    = 500
@@ -57,7 +57,6 @@ module "service_environment_stg" {
 
   service_environment = "nonprd"
   service_name        = "comparatorProductPrice"
-  service_region      = "eu-west-1"
 
   ordered_placement_strategy = [
     {
