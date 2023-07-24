@@ -6,8 +6,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:stag": "cp -f src/environments/environment.stg.js src/environments/environment.js && cp package.json dist && cp package-lock.json dist && cd dist && npm ci --ignore-scripts",
-    "build:prod": "cp -f src/environments/environment.prd.js src/environments/environment.js && cp package.json dist && cp package-lock.json dist && cd dist && npm ci --ignore-scripts",
+    "build:stag": "cp -f src/environments/environment.stg.js src/environments/environment.js",
+    "build:prod": "cp -f src/environments/environment.prd.js src/environments/environment.js",
     "start": "node index.js"
   },
   "keywords": [],
