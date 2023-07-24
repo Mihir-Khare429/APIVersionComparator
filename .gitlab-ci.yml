@@ -84,6 +84,7 @@ plan-stg :
 
 deploy-stg :
   <<: *ssh-common
+  <<: *npm_setup
   <<: *tags-common
   image: registry.gitlab.com/cimpress-technology/ff/infrastructure.ci.cd/modules/ecs-service:1.3.0
   stage : deploy
