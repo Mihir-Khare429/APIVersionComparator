@@ -1,11 +1,35 @@
 import { S3Client, PutObjectCommand, ListObjectsV2Command, GetObjectCommand} from "@aws-sdk/client-s3";
-import { REGION, BUCKET_NAME, BUCKET_NAME_LOGS } from "../constants/constants.js";
+import { DeleteMessageCommand, ReceiveMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
+import { REGION, BUCKET_NAME, BUCKET_NAME_LOGS, QUEUEURL } from "../constants/constants.js";
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { DataSheetConverter } from "@cimpress-technology/pricing-utility";
 
 const client = new S3Client({
     region : REGION
 })
+
+const sqsClient = new SQSClient({
+    region : REGION
+})
+
+export const getEventsFromSQS = async() => {
+    const command = new ReceiveMessageCommand({
+        QueueUrl : QUEUEURL
+    })
+
+    const { Messages } = await sqsClient.send(command)
+
+    return Messages
+}
+
+export const deleteEventsFromSQS = async(receiptHandle) => {
+    const command = new DeleteMessageCommand({
+        QueueUrl : QUEUEURL,
+        ReceiptHandle : receiptHandle
+    })
+
+    await sqsClient.send(command)
+}
 
 export const UploadObjectToS3 = async (data) => {
     try{

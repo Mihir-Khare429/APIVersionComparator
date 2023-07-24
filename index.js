@@ -1,17 +1,18 @@
-import { express } from 'express';
-import { config } from 'dotenv';
-import router from './src/routes/index';
+import { deleteEventsFromSQS, getEventsFromSQS } from './src/utils/awsUtils.js';
+import { processor } from './src/logProcessor/processor.js';
 
-config();
-const app = express();
-const PORT = process.env.PORT || 3000;
+(async() => {
+    while(true){
+        const messages = await getEventsFromSQS()
 
-app.get('/healthcheck',(req,res) => {
-    res.status(200).send('Healthy!')
-})
+        if ( messages && messages.length > 0) {
+            try{
+                await deleteEventsFromSQS(messages[0].ReceiptHandle)
+                processor()
+            }catch(err){
+                console.log(err)
+            }
 
-app.use(router);
-
-app.listen(PORT , () => {
-    console.log(`Server is listening on ${PORT}`)
-})
+        }
+    }
+})();

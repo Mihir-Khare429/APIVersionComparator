@@ -7,7 +7,7 @@ terraform {
   }
   backend "s3" {
     bucket = "financialflows.terraform"
-    key    = "eu-west-1/comparator/prd/terraform.tfstate"
+    key    = "eu-west-1/comparator/stg/terraform.tfstate"
     region = "eu-west-1"
   }
 }
@@ -35,4 +35,45 @@ locals {
     "Business Unit" = "Cimpress"
     Squad           = "Amarok"
   }
+  container_variables = [
+    { name = "ENVIRONMENT", value = "staging" },
+    { name = "DEPLOYMENT_NAME", value = "stg" },
+  ]
 }
+
+module "service_environment_stg" {
+  source = "./base_cicd_infra/service_environment/service_environment"
+
+  container_port      = 80
+  container_memory    = 500
+  container_variables = local.container_variables
+  container_version   = var.container_version
+
+  on_image_deploy = "bash ../deploy-image.sh"
+
+  scaling_capacity_max = 4
+  scaling_capacity_min = 0
+
+  service_cluster                    = "ecs-service-cluster-nonprod"
+  service_count                      = 1
+  deployment_maximum_percent         = 200
+  deployment_minimum_healthy_percent = 50
+
+  service_environment = "nonprd"
+  service_name        = "comparatorProductPrice"
+
+  ordered_placement_strategy = [
+    {
+      type  = "spread"
+      field = "attribute:ecs.availability-zone"
+    },
+    {
+      type  = "binpack",
+      field = "memory"
+    }
+  ]
+
+  tags = local.tags
+
+}
+

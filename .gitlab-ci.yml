@@ -27,7 +27,7 @@ stages:
   - init
   - build
   - plan
-  - apply
+  - deploy
 
 intialise: 
    image: xueshanf/awscli
@@ -89,9 +89,8 @@ deploy-stg :
     - master
   script : 
     - ./scripts/build-image.sh
-    - cd scripts/service-stg
+    - cd scripts
     - export const TF_VAR_container_version=$CI_COMMIT_SHORT_SHA
-    - export const TF_VAR_newrelic_key=$FF_NEW_RELIC_LICENSE_KEY
     - terraform init
     - terraform apply --auto-approve
 
