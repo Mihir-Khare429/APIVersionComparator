@@ -73,8 +73,6 @@ plan-stg :
   artifacts :
     untracked: true 
     expire_in : 1 week
-  dependencies:
-    - "build-stg"
   script : 
     - terraform -v
     - cd scripts
@@ -84,7 +82,6 @@ plan-stg :
 
 deploy-stg :
   <<: *ssh-common
-  <<: *npm_setup
   <<: *tags-common
   image: registry.gitlab.com/cimpress-technology/ff/infrastructure.ci.cd/modules/ecs-service:1.3.0
   stage : deploy
@@ -92,8 +89,6 @@ deploy-stg :
   only : 
     - master
     - main
-  dependencies:
-    - "plan-stg"
   script : 
     - chmod +x scripts/build-image.sh
     - ./scripts/build-image.sh
