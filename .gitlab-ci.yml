@@ -80,7 +80,7 @@ plan-stg :
     - cd scripts
     - terraform init
     - terraform validate
-    - terraform plan
+    - terraform plan 
 
 deploy-stg :
   <<: *ssh-common
@@ -90,6 +90,7 @@ deploy-stg :
   when: manual
   only : 
     - master
+    - main
   dependencies:
     - "plan-stg"
   script : 
