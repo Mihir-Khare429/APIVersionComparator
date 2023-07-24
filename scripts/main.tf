@@ -35,6 +35,10 @@ locals {
     "Business Unit" = "Cimpress"
     Squad           = "Amarok"
   }
+  container_variables = [
+    { name = "ENVIRONMENT", value = "staging" },
+    { name = "DEPLOYMENT_NAME", value = "stg" },
+  ]
 }
 
 module "service_environment_stg" {
