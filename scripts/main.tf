@@ -103,7 +103,7 @@ resource "aws_ecs_task_definition" "comparatorProductPrice-nonprd" {
 
 resource "aws_iam_policy" "sqs_recieve_message_policy" {
   name = "ComaparatorSQSReadPolicy"
-  policy = jsondecode(
+  policy = jsonencode(
     {
     "Version": "2012-10-17",
     "Statement": [
@@ -135,8 +135,8 @@ resource "aws_iam_policy" "sqs_recieve_message_policy" {
             "Action": "sqs:ListQueues",
             "Resource": "*"
         }
-    ]
-}
+      ]
+    }
   )
 }
 
