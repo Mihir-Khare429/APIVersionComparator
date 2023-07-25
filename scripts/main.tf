@@ -17,6 +17,17 @@ variable "container_version" {
   type        = string
 }
 
+variable "task_profile_role_arn" {
+  description = "ARN for the task profile role"
+  type = string
+  default = "arn:aws:iam::710170054012:role/comparatorproductprice-nonprd-taskprofile"
+}
+
+variable "task_profile_role_name" {
+  type = string
+  default = "comparatorproductprice-nonprd-taskprofile"
+}
+
 provider "aws" {
     region = "eu-west-1"
 }
@@ -90,4 +101,47 @@ resource "aws_ecs_task_definition" "comparatorProductPrice-nonprd" {
                             CONTAINER_DEFINITIONS
 }
 
+resource "aws_iam_policy" "sqs_recieve_message_policy" {
+  name = "ComaparatorSQSReadPolicy"
+  policy = jsondecode(
+    {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "sqs:DeleteMessage",
+                "sqs:StartMessageMoveTask",
+                "sqs:GetQueueUrl",
+                "sqs:CancelMessageMoveTask",
+                "sqs:ChangeMessageVisibility",
+                "sqs:ListMessageMoveTasks",
+                "sqs:ReceiveMessage",
+                "sqs:SendMessage",
+                "sqs:GetQueueAttributes",
+                "sqs:ListQueueTags",
+                "sqs:ListDeadLetterSourceQueues",
+                "sqs:PurgeQueue",
+                "sqs:DeleteQueue",
+                "sqs:CreateQueue",
+                "sqs:SetQueueAttributes"
+            ],
+            "Resource": "arn:aws:sqs:eu-west-1:710170054012:comparatorServiceSQS"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": "sqs:ListQueues",
+            "Resource": "*"
+        }
+    ]
+}
+  )
+}
+
+resource "aws_iam_role_policy_attachment" "attachSQSPolicy" {
+  role = var.task_profile_role_name
+  policy_arn = aws_iam_policy.sqs_recieve_message_policy.arn
+}
 

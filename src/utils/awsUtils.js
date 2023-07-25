@@ -19,6 +19,10 @@ export const getEventsFromSQS = async() => {
 
     const { Messages } = await sqsClient.send(command)
 
+    if(Messages){
+        console.log('Messages Recieved', Messages)
+    }
+
     return Messages
 }
 

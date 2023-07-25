@@ -3,6 +3,7 @@ import { processor } from './src/logProcessor/processor.js';
 
 (async() => {
     try{
+        console.log("Processor Started", Date.now())
         while(true){
             const messages = await getEventsFromSQS()
     
