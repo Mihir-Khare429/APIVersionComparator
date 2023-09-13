@@ -39,11 +39,12 @@ export const compareResponseLogsFromS3Processor = async (logs) => {
         const authToken = await getAuthToken();
         const promiseArray = [];
 
+        console.log("Network calls begins",logs)
         logs.forEach(async (log) => {
             const httpRequest = new HttpRequest(log.route, authToken);
 
             if(log.method == 'GET'){
-                const response = httpRequest.GetResource();
+                const response = httpRequest.GetResource(log.query);
                 promiseArray.push(response)
             }
 
@@ -55,10 +56,12 @@ export const compareResponseLogsFromS3Processor = async (logs) => {
 
         const data = await Promise.allSettled(promiseArray)
 
+        console.log("Network calls completed.",data)
+
         data.forEach(async (res, idx) => {
 
             if(res.status != 'rejected'){
-               await comparator(logs[idx]['oldResponse'], res.value) 
+               await comparator(logs[idx]['oldResponse'].bodyParsed[0], res.value.value[0]) 
             }
         })
 

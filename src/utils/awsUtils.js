@@ -39,7 +39,7 @@ export const UploadObjectToS3 = async (data) => {
     try{
         const command = new PutObjectCommand({
             Bucket : BUCKET_NAME,
-            Key: `${new Date().toISOString()}`,
+            Key: `PriceListAPI : ${new Date().toISOString()}`,
             Body: JSON.stringify(data),
             ContentType: 'application/json; charset=utf-8'
         })
@@ -88,12 +88,17 @@ export const ReadObjectsFromS3 = async () => {
 export const GetObjectFromS3File = async () => {
     try{
         const bucketKey = await ReadObjectsFromS3();
+        console.log(`S3 file key ${bucketKey}`);
         const preSignedUrl = await createPreSignedUrl(bucketKey)
+        console.log(preSignedUrl)
         const bucketData = await DataSheetConverter(preSignedUrl)
 
         if(bucketData){
-           
+            console.log("Bucket data fetched.")
+            
             return bucketData.rows
+        }else{
+            console.log("Unable to fetch bucket data.")
         }
 
     }catch(err){

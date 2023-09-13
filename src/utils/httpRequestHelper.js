@@ -2,7 +2,7 @@ import axios from "axios";
 
  export class HttpRequest {
 
-    baseUrl = 'https://productprice.financialflows.cimpress.io';
+    baseUrl = 'https://productpricecore.ff.cimpress.io';
     #route;
     #accessToken;
 
@@ -13,13 +13,17 @@ import axios from "axios";
     
     #tokenConfigGenerator(){
         return {
-            headers: { Authorization: `Bearer ${this.#accessToken}` }
+            headers: { 
+                'Authorization': `Bearer ${this.#accessToken}`,
+                'Content-Type': 'application/json',
+            }
         };
     }
 
-    async GetResource(){
-        const requestUrl = `${this.baseUrl}${this.#route}`;
+    async GetResource(query){
+        const requestUrl = `${this.baseUrl}${this.#route}?${query}`;
         try{
+            console.log(`Get Request ${requestUrl}`)
             const {data} = await axios.get(requestUrl , 
                 this.#tokenConfigGenerator()
             );
@@ -34,8 +38,10 @@ import axios from "axios";
 
     async PostResponse(body){
         const requestUrl = `${this.baseUrl}${this.#route}`;
+        //const parsedBody = body.replace(/[\"]/g, '"');
         const config = this.#tokenConfigGenerator();
         try{
+            console.log(`Post Request ${requestUrl}`)
             const {data} = await axios.post(requestUrl, body,config)
 
             return data;

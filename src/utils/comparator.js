@@ -7,9 +7,12 @@ export const comparator = async(response, coreResponse) => {
 
         if(!deepEqual(response, coreResponse)){
             const differencesBetweenObjects = generateDifferenceBetweenResponseObjects(response, coreResponse)
-            const status = await UploadObjectToS3(differencesBetweenObjects)
 
-            return status
+            if(differencesBetweenObjects.differences > 0){
+                const status = await UploadObjectToS3(differencesBetweenObjects)
+
+                return status
+            }
         }
 
     }catch(err){
@@ -37,9 +40,9 @@ function deepEqual(obj1, obj2){
 function generateDifferenceBetweenResponseObjects(obj1, obj2){
     const differences = []
 
-    if(_.isArray(obj2)){
-        obj2 = obj2[0]
-    }
+    // if(_.isArray(obj2)){
+    //     obj2 = obj2[0]
+    // }
 
     const keys1 = Object.keys(obj1);
     const keys2 = Object.keys(obj2);
