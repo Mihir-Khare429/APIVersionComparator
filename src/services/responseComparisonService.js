@@ -12,21 +12,24 @@ export const compareResponse = async (req, res) => {
       const extractedData = extractDataFromRequest(body);
       const httpRequest = new HttpRequest(extractedData.route, authToken);
 
-      if (extractedData.method == "GET") {
-        const response = await httpRequest.GetResource();
-        await generateDifferenceAndUpdateToS3(
-          extractedData.oldResponse,
-          response
-        );
+      let productPriceCoreResponse;
+      switch (extractedData.method) {
+        case "GET":
+          productPriceCoreResponse = await httpRequest.GetResource();
+          break;
+        case "POST":
+          productPriceCoreResponse = await httpRequest.PostResponse(
+            extractedData.body
+          );
+          break;
+        default:
+          productPriceCoreResponse = null;
       }
 
-      if (extractedData.method == "POST") {
-        const response = await httpRequest.PostResponse(extractedData.body);
-        await generateDifferenceAndUpdateToS3(
-          extractedData.oldResponse,
-          response
-        );
-      }
+      await generateDifferenceAndUpdateToS3(
+        extractedData.oldResponse,
+        productPriceCoreResponse
+      );
     }
 
     return res.status(400).send({
@@ -48,22 +51,26 @@ export const compareResponseLogsFromS3Processor = async (logs) => {
     logs.forEach(async (log) => {
       const httpRequest = new HttpRequest(log.route, authToken);
 
-      if (log.method == "GET") {
-        const response = httpRequest.GetResource(log.query);
-        promiseArray.push(response);
+      let productPriceCoreResponsePromise;
+      switch (log.method) {
+        case "GET":
+          productPriceCoreResponsePromise = httpRequest.GetResource(log.query);
+          break;
+        case "POST":
+          productPriceCoreResponsePromise = httpRequest.PostResponse(log.body);
+          break;
+        default:
+          productPriceCoreResponsePromise = null;
       }
 
-      if (log.method == "POST") {
-        const response = httpRequest.PostResponse(log.body);
-        promiseArray.push(response);
-      }
+      promiseArray.push(productPriceCoreResponsePromise);
     });
 
-    const data = await Promise.allSettled(promiseArray);
+    const productPriceCoreResponses = await Promise.allSettled(promiseArray);
 
-    console.log("Network calls completed.", data);
+    console.log("Network calls completed.", productPriceCoreResponses);
 
-    data.forEach(async (res, idx) => {
+    productPriceCoreResponses.forEach(async (res, idx) => {
       if (res.status != "rejected") {
         await generateDifferenceAndUpdateToS3(
           logs[idx]["oldResponse"].bodyParsed[0],
