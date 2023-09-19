@@ -2,16 +2,17 @@
 // The body would consist of response from old request and request body.
 
 export const extractDataFromRequest = (data) => {
-    const {HttpBody,HttpMethod,HttpQuery,HttpRoute} = oldResponse?.AdditionalData
+  const { HttpBody, HttpMethod, HttpQuery, HttpRoute } =
+    oldResponse?.AdditionalData;
 
-    const extractedData = {
-        route : HttpRoute,
-        query : HttpQuery,
-        body : HttpBody,
-        params,
-        method : HttpMethod,
-        oldResponse
-    }
+  const extractedData = {
+    route: HttpRoute,
+    query: HttpQuery,
+    body: HttpBody,
+    params,
+    method: HttpMethod,
+    oldResponse,
+  };
 
-    return extractedData;
-}
+  return extractedData;
+};

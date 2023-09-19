@@ -1,4 +1,4 @@
 export const config = {
-    environment : "stg",
-    baseUrl : 'https://stg-productprice.financialflows.cimpress.io'
-}
+  environment: "stg",
+  baseUrl: "https://stg-productprice.financialflows.cimpress.io",
+};
