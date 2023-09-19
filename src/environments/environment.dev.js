@@ -1,4 +1,4 @@
 export const config = {
-    environment : "dev",
-    baseUrl : 'http:localhost:5000/'
-}
+  environment: "dev",
+  baseUrl: "http:localhost:5000/",
+};
