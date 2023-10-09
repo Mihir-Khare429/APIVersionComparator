@@ -62,16 +62,15 @@ const logMapper = (data) => {
 
         if(body){
             const direction = body?.HttpDirection !== undefined ? body.HttpDirection : getRequestDirection(mt)
-            const key =  body.HttpHeaders['orion-correlation-id-root']
-            //const key = JSON.parse(log.contents["_raw"]).OrionCorrelationData["RootId"];
+            //const key =  body.HttpHeaders['orion-correlation-id-root']
+            const key = JSON.parse(log.contents["_raw"]).OrionCorrelationData["RootId"];
             let directionToAdd;
             
-            if(key != undefined){
+            if(key != undefined && direction != undefined){
 
                 if(directionDictionary.hasOwnProperty(key)){
                     const directionAlreadyPresent = directionDictionary[key]
                     directionToAdd = directionAlreadyPresent == "Outgoing" ? "Incoming" : "Outgoing"
-                    console.log("Direction to add", directionToAdd, "Already Present", directionAlreadyPresent)
                 }else{
                     directionDictionary[key] = direction
                 }
@@ -93,11 +92,9 @@ const logMapper = (data) => {
         }
         
     });
-    console.log(dictionary)
     for(let key in dictionary){
-        console.log(key)
         const value = dictionary[key]
-        console.log(value)
+
         if(value.length != 2){
             delete dictionary[key]
         }
@@ -108,9 +105,11 @@ const logMapper = (data) => {
 }
 
 const getRequestDirection = (message) => {
-    const direction = message.slice(0,2)
+    if(message != undefined){
+        const direction = message.slice(0,2)
 
-    return direction === "=>" ? "Incoming" : "Outgoing"
+        return direction === "=>" ? "Incoming" : "Outgoing";
+    }
 }
 
 const logFilter = (data) => {
@@ -134,4 +133,34 @@ const logFilter = (data) => {
     })
 
     return filteredLogs;
+}
+
+export const logParser2 = async (logs) => {
+    try{
+        const parsedLogs = logs.map((log) => {
+            let body;
+
+            try{
+                body = JSON.parse(log.contents["_raw"]).AdditionalData
+            }catch(err){
+
+                return ;
+            }
+            if(typeof(body.HttpBody) == "string"){
+                return ;
+            }
+
+            return {
+                body : body.HttpBody,
+                query : body.HttpQuery,
+                method : body.HttpMethod,
+                route : body.HttpRoute
+            }
+        })
+
+        return parsedLogs;
+
+    }catch(err){
+        console.log(err)
+    }
 }

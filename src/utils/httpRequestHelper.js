@@ -2,11 +2,12 @@ import axios from "axios";
 
  export class HttpRequest {
 
-    baseUrl = 'https://productpricecore.ff.cimpress.io';
+    baseUrl;
     #route;
     #accessToken;
 
-    constructor(route, token){
+    constructor(baseUrl, route, token){
+        this.baseUrl = baseUrl
         this.#route = route
         this.#accessToken = token
     }
@@ -20,11 +21,11 @@ import axios from "axios";
         };
     }
 
-    async GetResource(query){
+    GetResource(query){
         const requestUrl = `${this.baseUrl}${this.#route}?${query}`;
         try{
             console.log(`Get Request ${requestUrl}`)
-            const {data} = await axios.get(requestUrl , 
+            const {data} = axios.get(requestUrl , 
                 this.#tokenConfigGenerator()
             );
 
@@ -36,13 +37,13 @@ import axios from "axios";
         }
     }
 
-    async PostResponse(body){
+    PostResponse(body){
         const requestUrl = `${this.baseUrl}${this.#route}`;
         //const parsedBody = body.replace(/[\"]/g, '"');
         const config = this.#tokenConfigGenerator();
         try{
             console.log(`Post Request ${requestUrl}`)
-            const {data} = await axios.post(requestUrl, body,config)
+            const {data} = axios.post(requestUrl, body,config)
 
             return data;
 

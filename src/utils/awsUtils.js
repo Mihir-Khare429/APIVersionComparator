@@ -39,7 +39,7 @@ export const UploadObjectToS3 = async (data) => {
     try{
         const command = new PutObjectCommand({
             Bucket : BUCKET_NAME,
-            Key: `PriceListAPI : ${new Date().toISOString()}`,
+            Key: `AllRoutes : ${new Date().toISOString()}`,
             Body: JSON.stringify(data),
             ContentType: 'application/json; charset=utf-8'
         })

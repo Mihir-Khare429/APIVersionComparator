@@ -2,7 +2,6 @@ import axios from "axios";
 // Need to check for expiry of token before request for new one.
 
 export const getAuthToken = async () => {
-    
 
     try{
         const { data } = await axios.post(
@@ -15,6 +14,8 @@ export const getAuthToken = async () => {
             },
             { headers: { 'content-type': 'application/json' } }
           );
+
+          console.log("Response : ", data.access_token)
         
           return data.access_token;
 
