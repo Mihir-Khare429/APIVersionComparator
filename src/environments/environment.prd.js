@@ -1,4 +1,4 @@
 export const config = {
-    environment : "prd",
-    baseUrl : 'https://productprice.financialflows.cimpress.io'
-}
+  environment: "prd",
+  baseUrl: "https://productprice.financialflows.cimpress.io",
+};
