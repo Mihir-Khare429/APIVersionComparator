@@ -1,4 +1,7 @@
 import axios from "axios";
+import dotenv from 'dotenv'
+
+dotenv.config()
 // Need to check for expiry of token before request for new one.
 
 export const getAuthToken = async () => {
@@ -7,8 +10,8 @@ export const getAuthToken = async () => {
       "https://oauth.cimpress.io/v2/token",
       {
         grant_type: "client_credentials",
-        client_id,
-        client_secret,
+        client_id: process.env.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET,
         audience: "https://api.cimpress.io/",
       },
       { headers: { "content-type": "application/json" } }
