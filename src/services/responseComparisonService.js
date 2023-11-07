@@ -45,36 +45,55 @@ export const compareResponse = async (req, res) => {
 export const compareResponseLogsFromS3Processor = async (logs) => {
   try {
     const authToken = await getAuthToken();
-    const promiseArray = [];
+    const promiseArrayOld = [];
+    const promiseArrayNew = [];
+    const responseOld = [];
+    const responeNew = [];
 
-    console.log("Network calls begins", logs);
-    logs.forEach(async (log) => {
-      const httpRequest = new HttpRequest(log.route, authToken);
+    console.log("Network calls begins");
 
-      let productPriceCoreResponsePromise;
+    for(const log of logs){
+      const httpRequestOld = new HttpRequest('https://priceintegration.financialflows.cimpress.io',log.route, authToken);
+      const httpRequestNew = new HttpRequest('https://pricingintegration.financialflows.cimpress.io/v1/priceList',log.route, authToken);
+
+      let priceIntegrationOldResponse;
+      let priceIntegrationNewResponse;
       switch (log.method) {
         case "GET":
-          productPriceCoreResponsePromise = httpRequest.GetResource(log.query);
+          priceIntegrationOldResponse = await httpRequestOld.GetResource(log.query);
+          priceIntegrationNewResponse = await httpRequestNew.GetResource(log.query);
           break;
         case "POST":
-          productPriceCoreResponsePromise = httpRequest.PostResponse(log.body);
+          priceIntegrationOldResponse = await httpRequestOld.PostResponse(log.body);
+          priceIntegrationNewResponse = await httpRequestNew.PostResponse(log.body);
           break;
         default:
-          productPriceCoreResponsePromise = null;
+          priceIntegrationOldResponse = null;
+          priceIntegrationNewResponse = null;
       }
 
-      promiseArray.push(productPriceCoreResponsePromise);
-    });
+      promiseArrayOld.push(priceIntegrationOldResponse);
+      promiseArrayNew.push(priceIntegrationNewResponse)
 
-    const productPriceCoreResponses = await Promise.allSettled(promiseArray);
+      if(promiseArrayOld.length >= 10){
+        const priceIntgerationOld = await Promise.allSettled(promiseArrayOld);
+        const priceIntgerationNew = await Promise.allSettled(promiseArrayNew)
 
-    console.log("Network calls completed.", productPriceCoreResponses);
+        responseOld.push(priceIntgerationOld)
+        responeNew.push(priceIntgerationNew)
 
-    productPriceCoreResponses.forEach(async (res, idx) => {
+        promiseArrayOld.length = 0
+        promiseArrayNew.length = 0
+      }
+    };
+
+    console.log("Network calls completed.");
+
+    responseOld.forEach(async (res, idx) => {
       if (res.status != "rejected") {
         await generateDifferenceAndUpdateToS3(
-          logs[idx]["oldResponse"].bodyParsed[0],
-          res.value.value[0]
+          responeNew.value,
+          res.value
         );
       }
     });
