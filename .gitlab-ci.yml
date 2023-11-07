@@ -4,6 +4,15 @@
 # 3. Run Terraform plan
 # 4. Run Terraform apply.
 
+#Canary Deployment(To be discussed and applied)
+
+# 1. Create new target group
+# 2. Build new docker image and push it to registry
+# 3. Create new ECS Service to serve these tasks defintion
+# 4. Shift little amount of traffic from ALB to newly created service
+# 5. If the test is going good we can increase the traffic 
+# 6. If errors are there we can delete the new service and shift all traffic to old service
+
 .ssh: &ssh-common
   before_script:
     - mkdir -p ~/.ssh
@@ -27,6 +36,7 @@
 stages:
   - init
   - build
+  - deploy-canary
   - plan
   - deploy
 
@@ -97,5 +107,16 @@ deploy-stg :
     - export const TF_VAR_container_version=$CI_COMMIT_SHORT_SHA
     - terraform init
     - terraform apply --auto-approve
+
+deploy-canary : 
+  image: xueshanf/awscli
+  stage: deploy-canary
+  only: 
+    - master
+    - main
+  dependencies:
+    - "build-stg"
+  script :
+   - aws ecs create-service --cluster ecs-service-cluster-nonprod --service-name comparator_canary --task-definition sleep360:2 --desired-count 2
 
 
